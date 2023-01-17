@@ -4,6 +4,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
@@ -12,6 +15,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import aurora.app.frames.CodeWindow;
+import aurora.app.frames.ProjectWindow;
+import balbucio.file.BalbFile;
 
 public class FileExplorer extends JPanel implements ActionListener {
 
@@ -23,13 +28,10 @@ public class FileExplorer extends JPanel implements ActionListener {
 
     private String dirPath;
     private File directory;
-    private File projectFile;
+    private BalbFile projectFile;
     private DefaultMutableTreeNode rootNode;
     private DefaultTreeModel model;
     private JTree tree;
-    private JButton openFolder;
-    private JButton openArchive;
-    private JButton openInNetwork;
     private boolean fileOpened = false;
     private ClickListener clickListener;
     private CodeWindow window;
@@ -49,10 +51,14 @@ public class FileExplorer extends JPanel implements ActionListener {
         if (response == JFileChooser.APPROVE_OPTION) {
             directory = chooser.getSelectedFile();
             fileOpened = true;
-            this.projectFile = new File(directory, "project.aurora");
+            this.projectFile = new BalbFile(new File(directory, "project.aurora"), true);
             clickListener = new ClickListener(directory, tree, window);
+            if(projectFile.get("projectName") == null){
+                configureProject();
+            } else {
+                loadFiles();
+            }
             loadFiles();
-            //this.remove(openFolder);
             this.setLayout(new BorderLayout());
             this.add(tree, BorderLayout.CENTER);
             this.updateUI();
@@ -62,13 +68,23 @@ public class FileExplorer extends JPanel implements ActionListener {
     public void openFolder(File folder){
         directory = folder;
         fileOpened = true;
-        this.projectFile = new File(directory, "project.aurora");
+        this.projectFile = new BalbFile(new File(directory, "project.aurora"), true);
         clickListener = new ClickListener(directory, tree, window);
-        loadFiles();
-        //this.remove(openFolder);
+        if(projectFile.get("projectName") == null){
+            configureProject();
+        } else {
+            loadFiles();
+        }
         this.setLayout(new BorderLayout());
         this.add(tree, BorderLayout.CENTER);
         this.updateUI();
+    }
+
+    public void configureProject(){
+        if(projectFile.get("projectName") == null){
+            new ProjectWindow(window, projectFile);
+            loadFiles();
+        }
     }
 
     private void loadFiles() {
@@ -87,7 +103,6 @@ public class FileExplorer extends JPanel implements ActionListener {
                         selected, expanded, isLeaf, row, focused);
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
                 String str = (String) node.getUserObject();
-                // System.out.println(str);
                 if (str.endsWith(".java")) {
                     setIcon(IconManager.getIcon("javac"));
                 } else if (str.endsWith(".py")) {
@@ -101,7 +116,6 @@ public class FileExplorer extends JPanel implements ActionListener {
                 }
                 return c;
             }
-
         });
         displayFiles(rootNode, directory);
         tree.setModel(model);
@@ -109,7 +123,18 @@ public class FileExplorer extends JPanel implements ActionListener {
 
     //Method to load files and folders CAUTION : Highly recursive
     private void displayFiles(DefaultMutableTreeNode root, File file) {
-        File[] files = file.listFiles();
+
+        ArrayList<File> files = new ArrayList<>();
+        List<File> source = Arrays.asList(file.listFiles());
+
+        files.stream().filter(f -> f.isDirectory()).forEach(f -> {
+            String name = f.getName();
+            if(name.contains("src")){
+            }
+            DefaultMutableTreeNode sub = new DefaultMutableTreeNode(f.getName());
+            sub.setAllowsChildren(true);
+            root.add(sub);
+        });
 
         for (File f : files) {
             if (f.isDirectory()) {

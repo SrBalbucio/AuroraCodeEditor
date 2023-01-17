@@ -35,6 +35,8 @@ dependencies {
     implementation 'com.formdev:flatlaf-intellij-themes:2.0.2'
     implementation 'com.formdev:flatlaf-extras:2.0.2'
     implementation 'com.github.OpenHFT:Java-Runtime-Compiler:compiler-2.23ea0'
+    implementation 'com.github.Vatuu:discord-rpc:1.6.2'
+    implementation 'com.github.SrBalbucio:balbFile:1.0'
 }
 
 application {

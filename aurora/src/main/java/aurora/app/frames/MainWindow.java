@@ -2,6 +2,7 @@ package aurora.app.frames;
 
 import aurora.app.AppConstants;
 import aurora.app.Icon;
+import aurora.app.Main;
 import aurora.editor.font.FontManager;
 import aurora.explorer.ClickListener;
 import aurora.explorer.IconManager;
@@ -14,7 +15,8 @@ import java.io.File;
 public class MainWindow extends JFrame {
 
     public MainWindow(){
-        super(AppConstants.APP_NAME);
+        super(AppConstants.SIMPLE_APP_NAME);
+        Main.update(AppConstants.APP_NAME, "Main Page");
         Dimension preferedSize = new Dimension(600,400);
         this.setSize(preferedSize);
         this.setMinimumSize(preferedSize);

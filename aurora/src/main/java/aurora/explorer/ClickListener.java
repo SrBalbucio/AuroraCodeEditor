@@ -51,9 +51,7 @@ public class ClickListener implements TreeSelectionListener, MouseListener {
     public void valueChanged(TreeSelectionEvent e) {
         TreePath path = e.getPath();
         filePath = "";
-
         Object obj[] = path.getPath();
-
         for (int i = 1; i < path.getPathCount(); i++) {
             filePath += obj[i].toString();
             if (i != path.getPathCount() - 1) filePath += "\\";
@@ -63,14 +61,10 @@ public class ClickListener implements TreeSelectionListener, MouseListener {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
+    public void mouseClicked(MouseEvent e) {}
 
     @Override
     public void mousePressed(MouseEvent e) {
-        Object obj = e.getSource();
         if (e.getSource() instanceof JTree) {
             if (e.getClickCount() == 2) {
                 if (!filePath.isEmpty()) {
@@ -86,25 +80,6 @@ public class ClickListener implements TreeSelectionListener, MouseListener {
                 }
             }
         }
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
-
     }
 
     private void openFile(File file) {
@@ -120,7 +95,6 @@ public class ClickListener implements TreeSelectionListener, MouseListener {
     }
 
     private void addTab(File file, String code) {
-
         String title = file.getName();
         textArea = new SyntaxTextArea();
         textArea.setText(code);
@@ -137,19 +111,15 @@ public class ClickListener implements TreeSelectionListener, MouseListener {
         window.fileNameList.add(lblTitle.getText());
         configureButton(btnClose);
         btnClose.setActionCommand(title);
-        btnClose.addActionListener(new ActionListener() {
+        btnClose.addActionListener(e -> {
+            String tabTitle = e.getActionCommand();
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String tabTitle = e.getActionCommand();
-
-                int tabindex = tabPane.indexOfTab(tabTitle);
-                System.out.println(tabindex);
-                if (tabindex >= 0) {
-                    tabPane.removeTabAt(tabindex);
-                    window.list.remove(tabindex);
-                    window.fileNameList.remove(tabindex);//temp code
-                }
+            int tabindex = tabPane.indexOfTab(tabTitle);
+            System.out.println(tabindex);
+            if (tabindex >= 0) {
+                tabPane.removeTabAt(tabindex);
+                window.list.remove(tabindex);
+                window.fileNameList.remove(tabindex);
             }
         });
 
@@ -261,5 +231,17 @@ public class ClickListener implements TreeSelectionListener, MouseListener {
                     textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_KOTLIN);
                     break;
             }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 }
