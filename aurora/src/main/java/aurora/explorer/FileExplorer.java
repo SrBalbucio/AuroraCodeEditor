@@ -121,32 +121,38 @@ public class FileExplorer extends JPanel implements ActionListener {
         tree.setModel(model);
     }
 
-    //Method to load files and folders CAUTION : Highly recursive
-    private void displayFiles(DefaultMutableTreeNode root, File file) {
+    private void displayFiles(DefaultMutableTreeNode root, File file, boolean src, String package) {
 
-        ArrayList<File> files = new ArrayList<>();
-        List<File> source = Arrays.asList(file.listFiles());
+      if(file.getName().equalsIgnoreCase("src") && file.isDirectory()){
+        DefaultMutableTreeNode sub = new DefaultMutableTreeNode(f.getName());
+        sub.setAllowsChildren(true);
+        root.add(sub);
+        displayFiles(sub, file, true);
+        return;
+      }
 
-        files.stream().filter(f -> f.isDirectory()).forEach(f -> {
-            String name = f.getName();
-            if(name.contains("src")){
-            }
-            DefaultMutableTreeNode sub = new DefaultMutableTreeNode(f.getName());
-            sub.setAllowsChildren(true);
-            root.add(sub);
-        });
+      List<DefaultMutableTreeNode> paths = new ArrayList<>();
 
-        for (File f : files) {
+      boolean hasFile = false;
+      boolean i = 0;
+        for (File f : file.listFiles()) {
             if (f.isDirectory()) {
                 DefaultMutableTreeNode sub = new DefaultMutableTreeNode(f.getName());
                 sub.setAllowsChildren(true);
-                root.add(sub);
-                displayFiles(sub, f);
+                paths.add(sub);
+                i++;
             } else if (f.isFile()) {
                 DefaultMutableTreeNode fi = new DefaultMutableTreeNode(f.getName());
                 fi.setAllowsChildren(false);
                 root.add(fi);
+                hasFile = true;
             }
+        }
+        if(!hasFile && i == 1){
+          package += paths.get(0).getName();
+          displayFiles(root, true, package);
+        } else{
+          paths.stream().forEach(s -> root.add(s));
         }
     }
 

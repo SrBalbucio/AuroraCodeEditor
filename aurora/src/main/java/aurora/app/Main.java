@@ -30,7 +30,7 @@ public class Main {
 	public static void startDiscordRPC() {
 		DiscordEventHandlers handlers = new DiscordEventHandlers.Builder()
 				.setReadyEventHandler((user) -> {
-					System.out.println("Welcome " + user.username + "#" + user.discriminator + "!");
+					System.out.println("Seja bem-vindo " + user.username + "#" + user.discriminator + "!");
 				}).setDisconnectedEventHandler((errorCode, message) -> {
 					int i = JOptionPane.showConfirmDialog(null, "O Aurora foi forçado a se desconectar do Discord pelo seguinte motivo:" +
 							"\n" + message + "" +
