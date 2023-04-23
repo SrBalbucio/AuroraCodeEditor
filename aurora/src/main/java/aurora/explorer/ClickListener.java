@@ -54,10 +54,11 @@ public class ClickListener implements TreeSelectionListener, MouseListener {
         Object obj[] = path.getPath();
         for (int i = 1; i < path.getPathCount(); i++) {
             filePath += obj[i].toString();
-            if (i != path.getPathCount() - 1) filePath += "\\";
+            if (i != path.getPathCount() - 1) filePath += "/";
         }
-        qualifiedPath = directory.getAbsolutePath() + "\\" + filePath;
+        qualifiedPath = directory.getAbsolutePath() + "/" + filePath;
         System.out.println("Qualified Path: " + qualifiedPath);
+
     }
 
     @Override
@@ -66,6 +67,7 @@ public class ClickListener implements TreeSelectionListener, MouseListener {
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getSource() instanceof JTree) {
+            JTree tree = (JTree) e.getSource();
             if (e.getClickCount() == 2) {
                 if (!filePath.isEmpty()) {
                     File file = new File(qualifiedPath);
@@ -211,9 +213,6 @@ public class ClickListener implements TreeSelectionListener, MouseListener {
                     break;
                 case ".xml":
                     textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
-                    break;
-                case ".gradle":
-                    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_GROOVY);
                     break;
                 case ".asm":
                     textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_X86);

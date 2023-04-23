@@ -26,7 +26,6 @@ public class IconManager {
 			InputStream stream = getClass().getResourceAsStream("/icons/"+path+".png");
 			icon = new ImageIcon(ImageIO.read(stream));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return icon;

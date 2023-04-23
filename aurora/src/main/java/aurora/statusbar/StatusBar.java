@@ -10,14 +10,13 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
 public class StatusBar extends JPanel{
-	
+
 	JLabel label, langLabel, path;
 	String lang="", line="";
 	Color labelForeground;
 	JToolBar toolBar;
+
 	
-	
-	//constructor
 	public StatusBar() {
 		toolBar = new JToolBar();
 
@@ -35,24 +34,24 @@ public class StatusBar extends JPanel{
 		this.add(path);
 		this.add(label);
 	}
-	
+
 	public void setLine(String line) {
 		this.line ="                                          "+ line;
 		updateLabel();
 	}
-	
+
 	public void setLang(String lang) {
 		langLabel.setText("        "+lang);
 	}
-	
+
 	private void updateLabel() {
 		label.setText("  "+line+"    ");
 	}
-	
+
 	public void setPath(String path) {
 		this.path.setText("             "+path);
 	}
-	
+
 	private void setLabelForeground() {
 		this.label.setForeground(labelForeground);
 		this.langLabel.setForeground(labelForeground);
