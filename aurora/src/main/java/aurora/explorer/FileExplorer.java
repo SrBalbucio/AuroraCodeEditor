@@ -14,6 +14,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+
 import aurora.app.frames.CodeWindow;
 import aurora.app.frames.ProjectWindow;
 import balbucio.file.BalbFile;
@@ -53,7 +54,7 @@ public class FileExplorer extends JPanel implements ActionListener {
             fileOpened = true;
             this.projectFile = new BalbFile(new File(directory, "project.aurora"), true);
             clickListener = new ClickListener(directory, tree, window);
-            if(projectFile.get("projectName") == null){
+            if (projectFile.get("projectName") == null) {
                 configureProject();
             } else {
                 loadFiles();
@@ -65,12 +66,12 @@ public class FileExplorer extends JPanel implements ActionListener {
         }
     }
 
-    public void openFolder(File folder){
+    public void openFolder(File folder) {
         directory = folder;
         fileOpened = true;
         this.projectFile = new BalbFile(new File(directory, "project.aurora"), true);
         clickListener = new ClickListener(directory, tree, window);
-        if(projectFile.get("projectName") == null){
+        if (projectFile.get("projectName") == null) {
             configureProject();
         } else {
             loadFiles();
@@ -80,8 +81,8 @@ public class FileExplorer extends JPanel implements ActionListener {
         this.updateUI();
     }
 
-    public void configureProject(){
-        if(projectFile.get("projectName") == null){
+    public void configureProject() {
+        if (projectFile.get("projectName") == null) {
             new ProjectWindow(window, projectFile);
             loadFiles();
         }
@@ -117,42 +118,35 @@ public class FileExplorer extends JPanel implements ActionListener {
                 return c;
             }
         });
-        displayFiles(rootNode, directory);
+        displayFiles(rootNode, directory, false, null);
         tree.setModel(model);
     }
 
-    private void displayFiles(DefaultMutableTreeNode root, File file, boolean src, String package) {
+    private void displayFiles(DefaultMutableTreeNode root, File file, boolean src, String pack) {
 
-      if(file.getName().equalsIgnoreCase("src") && file.isDirectory()){
-        DefaultMutableTreeNode sub = new DefaultMutableTreeNode(f.getName());
-        sub.setAllowsChildren(true);
-        root.add(sub);
-        displayFiles(sub, file, true);
-        return;
-      }
+        DefaultMutableTreeNode rootEx = root;
+        List<File> fs = new ArrayList<>();
+        List<File> dirs = new ArrayList<>();
 
-      List<DefaultMutableTreeNode> paths = new ArrayList<>();
-
-      boolean hasFile = false;
-      boolean i = 0;
-        for (File f : file.listFiles()) {
+        File[] files = file.listFiles();
+        for (File f : files) {
             if (f.isDirectory()) {
-                DefaultMutableTreeNode sub = new DefaultMutableTreeNode(f.getName());
-                sub.setAllowsChildren(true);
-                paths.add(sub);
-                i++;
-            } else if (f.isFile()) {
-                DefaultMutableTreeNode fi = new DefaultMutableTreeNode(f.getName());
-                fi.setAllowsChildren(false);
-                root.add(fi);
-                hasFile = true;
+                dirs.add(f);
+            } else {
+                fs.add(f);
             }
         }
-        if(!hasFile && i == 1){
-          package += paths.get(0).getName();
-          displayFiles(root, true, package);
-        } else{
-          paths.stream().forEach(s -> root.add(s));
+
+        for (File f : dirs) {
+            DefaultMutableTreeNode fi = new DefaultMutableTreeNode(f.getName());
+            fi.setAllowsChildren(true);
+            rootEx.add(fi);
+            displayFiles(fi, f, false, null);
+        }
+        for (File f : fs) {
+            DefaultMutableTreeNode fi = new DefaultMutableTreeNode(f.getName());
+            fi.setAllowsChildren(false);
+            rootEx.add(fi);
         }
     }
 
